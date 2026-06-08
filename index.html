@@ -1,87 +1,106 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>プライバシーポリシー | 風邪日記</title>
-  <style>
-    :root {
-      --bg: #111;
-      --fg: #f6f6f6;
-      --accent: #27c1e5;
-      --link: #4cc3ff;
-    }
-    * { box-sizing: border-box; }
-    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; line-height:1.7; }
-    header { padding:2.5rem 1.25rem 1rem; text-align:center; }
-    h1 { margin:0; font-size:1.75rem; font-weight:700; color:var(--accent); }
-    main { max-width:900px; padding:0 1.25rem 4rem; margin:0 auto; }
-    section { margin-bottom:2.5rem; }
-    h2 { font-size:1.25rem; margin:0 0 0.75rem; border-left:4px solid var(--accent); padding-left:0.5rem; }
-    a { color:var(--link); }
-    footer { text-align:center; font-size:0.85rem; color:#aaa; padding:2rem 0; border-top:1px solid #333; }
-    @media (prefers-color-scheme: light) {
-      :root { --bg:#fafafa; --fg:#222; --accent:#0086b5; --link:#0077cc; }
-      footer { border-top-color:#ddd; color:#666; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>プライバシーポリシー — かぜ日記</title>
+<meta name="description" content="かぜ日記（Kaze Nikki）のプライバシーポリシー。開発：Great Wave Labs。" />
+<meta name="theme-color" content="#230D1A" />
+<link rel="icon" href="./KAZE.png" />
+<link rel="apple-touch-icon" href="./KAZE.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { coral:'#E8553B' },
+    fontFamily: { rounded: ['"M PLUS Rounded 1c"','-apple-system','BlinkMacSystemFont','sans-serif'] },
+  }}};
+</script>
+<style>
+  body {
+    font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, sans-serif;
+    color:#F5EEF2;
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(232,85,59,0.15), transparent 42%),
+      radial-gradient(circle at 82% 88%, rgba(107,70,193,0.18), transparent 46%),
+      linear-gradient(135deg, #230D1A 0%, #331224 48%, #1A0D1A 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+</style>
 </head>
-<body>
-  <header>
-    <h1>プライバシーポリシー</h1>
-    <p>最終更新日：2025-07-14</p>
-  </header>
+<body class="font-rounded">
 
-  <main>
-    <section>
-      <h2>1. アプリについて</h2>
-      <p>「<strong>風邪日記</strong>」（以下、「本アプリ」）は、ユーザーが入力した体温や症状、服薬情報をローカルに保存し、セルフケアや体調管理をサポートするアプリです。本アプリは開発者 <strong>Metamorph</strong>（以下、「当方」）が提供しています。</p>
-    </section>
+<header class="max-w-3xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+  <a href="./index.html" class="flex items-center gap-2.5">
+    <img src="./KAZE.png" alt="かぜ日記アイコン" class="w-9 h-9 rounded-[10px]" />
+    <span class="font-bold text-[17px]">かぜ日記</span>
+  </a>
+  <a href="./index.html" class="text-sm text-white/60 hover:text-white transition">← トップへ</a>
+</header>
 
-    <section>
-      <h2>2. 取得する情報と利用目的</h2>
-      <ul>
-        <li><strong>入力データ（体温・症状・服薬など）</strong><br>
-          端末内のみに保存し、外部サーバーへ送信・共有は行いません。</li>
-        <li><strong>広告情報（Google AdMob）</strong><br>
-          本アプリはバナー広告を表示するため <a href="https://policies.google.com/privacy?hl=ja" target="_blank" rel="noopener">Google AdMob</a> を利用しています。AdMob は広告識別子（IDFA など）、利用状況、位置情報の類推などを取得し、パーソナライズ広告配信・不正防止などに使用します。取得・利用内容の詳細は Google のポリシーをご確認ください。</li>
-      </ul>
-    </section>
+<main class="max-w-3xl mx-auto px-5 sm:px-8 py-12">
+  <h1 class="font-extrabold text-3xl sm:text-4xl mb-2">プライバシーポリシー</h1>
+  <p class="text-xs text-white/45 mb-10">最終更新日：2026年6月8日</p>
 
-    <section>
-      <h2>3. 第三者への提供</h2>
-      <p>前項の Google AdMob を除き、当方はユーザーの個人情報を第三者へ提供・共有いたしません。</p>
-    </section>
+  <div class="space-y-7 text-sm text-white/70 leading-relaxed">
+    <p>Great Wave Labs（以下「当方」）は、iOS向けアプリ「かぜ日記」（以下「本アプリ」）におけるユーザーのプライバシーを尊重し、個人情報および利用データの保護に努めます。本ポリシーは、本アプリにおける情報の取り扱いについて定めるものです。</p>
 
-    <section>
-      <h2>4. データの保存期間と削除</h2>
-      <p>ユーザーが端末の「データ削除」機能を利用するかアプリをアンインストールすることで、入力データは端末から完全に削除されます。AdMob が保持するデータについては Google の規定に従います。</p>
-    </section>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">1. 取得・保存する情報</h2>
+      <p>本アプリでは、ユーザーが入力した体温・症状・服薬・家族メンバー等の健康記録を取り扱います。これらのデータは、ユーザーのiPhone／iPadの端末内、およびユーザーが設定している場合はApple社が提供するiCloud内にのみ保存されます。当方がこれらの健康記録を取得・収集することはありません。</p>
+    </div>
 
-    <section>
-      <h2>5. 未成年の利用</h2>
-      <p>16 歳未満の方が本アプリを利用する場合、保護者の同意を得てからご利用ください。</p>
-    </section>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">2. 第三者への提供・送信</h2>
+      <p>本アプリは、ユーザーの健康記録を当方のサーバーや第三者へ送信・提供することはありません。記録の共有（テキスト共有・PDFレポートの送信／印刷等）は、すべてユーザーご自身の操作（iOSの共有シート）によってのみ行われます。</p>
+    </div>
 
-    <section>
-      <h2>6. 安全性と免責</h2>
-      <p>本アプリは医療機器ではなく、診断・治療を行うものではありません。体調に異常を感じた際は医師など専門家へ相談してください。当方は本アプリの利用により生じたいかなる損害についても責任を負いかねます。</p>
-    </section>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">3. AI要約機能について</h2>
+      <p>ProプランのAI要約機能（iOS 26以降・Apple Intelligence対応端末）は、Apple社のオンデバイス基盤モデル（Apple FoundationModels）を使用します。要約処理はすべて端末内で完結し、記録データが端末の外部に送信されることはありません。</p>
+    </div>
 
-    <section>
-      <h2>7. ポリシーの変更</h2>
-      <p>法令の改正やサービス内容の変更に応じ、本ポリシーを改定する場合があります。最新版は本ページにて公開し、改定後にアプリを使用した場合は改定に同意したものとみなされます。</p>
-    </section>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">4. 解析・広告について</h2>
+      <p>本アプリは、行動追跡を目的とした第三者の解析ツールや広告SDKを使用していません。ユーザーを個人として識別する目的での情報収集は行いません。</p>
+    </div>
 
-    <section>
-      <h2>8. お問い合わせ</h2>
-      <p>本ポリシーに関するお問い合わせは、以下のメールアドレスまでご連絡ください。<br>
-        <a href="mailto:keisuke9n@gmail.com">keisuke9n@gmail.com</a></p>
-    </section>
-  </main>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">5. App内課金</h2>
+      <p>Proプランの購入はApple社のApp Storeを通じて処理されます。課金・決済に関する情報はApple社により管理され、当方がクレジットカード番号等の決済情報を取得することはありません。</p>
+    </div>
 
-  <footer>
-    © 2025 Metamorph
-  </footer>
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">6. データの削除</h2>
+      <p>ユーザーは本アプリ内でいつでも記録を削除できます。本アプリをアンインストールすることで、端末内に保存されたデータは削除されます（iCloud上のデータについてはAppleの設定に従います）。</p>
+    </div>
+
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">7. 医療に関する免責</h2>
+      <p>本アプリは健康記録の補助を目的としたものであり、医療機器ではありません。診断・治療・予防を目的とするものではなく、医師等による専門的な判断に代わるものではありません。健康上の懸念がある場合は、必ず医療機関にご相談ください。</p>
+    </div>
+
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">8. 本ポリシーの変更</h2>
+      <p>本ポリシーは、必要に応じて改定されることがあります。重要な変更がある場合は、本ページまたはアプリ内にてお知らせします。</p>
+    </div>
+
+    <div>
+      <h2 class="font-bold text-white text-base mb-2">9. お問い合わせ</h2>
+      <p>本アプリおよび本ポリシーに関するお問い合わせは、以下までご連絡ください。</p>
+      <p class="mt-2">開発：Great Wave Labs<br>
+        メール：<a href="mailto:keisuke9n@gmail.com" class="text-coral font-semibold underline decoration-coral/40 hover:decoration-coral">keisuke9n@gmail.com</a></p>
+    </div>
+  </div>
+
+  <div class="mt-12 pt-6 border-t border-white/10 text-xs text-white/40">
+    © 2025 Great Wave Labs. All rights reserved.
+  </div>
+</main>
+
 </body>
 </html>
