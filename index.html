@@ -3,104 +3,647 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>プライバシーポリシー — かぜ日記</title>
-<meta name="description" content="かぜ日記（Kaze Nikki）のプライバシーポリシー。開発：Great Wave Labs。" />
+<title>かぜ日記 — 家族みんなの、風邪を記録する。</title>
+<meta name="description" content="体温・症状・服薬をまとめて管理。家族それぞれのデータを1台のiPhoneで。受診時に役立つPDFレポートも自動生成。かぜ日記（Kaze Nikki）はGreat Wave Labsが開発するiOS向けヘルスケアアプリです。" />
 <meta name="theme-color" content="#230D1A" />
+
+<!-- OGP -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="かぜ日記 — 家族みんなの、風邪を記録する。" />
+<meta property="og:description" content="体温・症状・服薬をまとめて管理。受診時に役立つPDFレポートも自動生成。" />
+<meta property="og:image" content="./KAZE.png" />
+<meta property="og:locale" content="ja_JP" />
+
 <link rel="icon" href="./KAZE.png" />
 <link rel="apple-touch-icon" href="./KAZE.png" />
+
+<!-- Fonts: rounded aesthetic (SF Rounded equivalent on web) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+<!-- Tailwind (CDN) -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  tailwind.config = { theme: { extend: {
-    colors: { coral:'#E8553B' },
-    fontFamily: { rounded: ['"M PLUS Rounded 1c"','-apple-system','BlinkMacSystemFont','sans-serif'] },
-  }}};
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          coral:  '#E8553B',
+          ppurple:'#6B46C1',
+          pblue:  '#3B82F6',
+          pcyan:  '#06B6D4',
+          pgreen: '#33C78E',
+          darkbg: '#230D1A',
+        },
+        fontFamily: {
+          rounded: ['"M PLUS Rounded 1c"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        },
+      },
+    },
+  };
 </script>
+
 <style>
+  :root {
+    --coral:  #E8553B;
+    --purple: #6B46C1;
+    --blue:   #3B82F6;
+    --cyan:   #06B6D4;
+    --green:  #33C78E;
+    --dark-bg:#230D1A;
+  }
+
+  html { scroll-behavior: smooth; }
+
   body {
     font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, sans-serif;
-    color:#F5EEF2;
+    background-color: #1A0D1A;
+    color: #F5EEF2;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ----- Atmospheric animated background ----- */
+  .bg-wine {
     background:
-      radial-gradient(circle at 18% 12%, rgba(232,85,59,0.15), transparent 42%),
-      radial-gradient(circle at 82% 88%, rgba(107,70,193,0.18), transparent 46%),
+      radial-gradient(circle at 18% 12%, rgba(232,85,59,0.18), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(107,70,193,0.20), transparent 46%),
       linear-gradient(135deg, #230D1A 0%, #331224 48%, #1A0D1A 100%);
     background-attachment: fixed;
-    min-height: 100vh;
+  }
+  .glow {
+    position: fixed;
+    border-radius: 9999px;
+    filter: blur(90px);
+    opacity: 0.45;
+    z-index: 0;
+    pointer-events: none;
+    animation: drift 16s ease-in-out infinite alternate;
+  }
+  .glow-1 { top: -8%; left: -6%; width: 46vw; height: 46vw; background: rgba(232,85,59,0.30); }
+  .glow-2 { bottom: -12%; right: -8%; width: 50vw; height: 50vw; background: rgba(107,70,193,0.30); animation-delay: -8s; }
+  @keyframes drift {
+    0%   { transform: translate(0,0) scale(1); }
+    100% { transform: translate(4%, 5%) scale(1.12); }
+  }
+
+  /* ----- Card style (per spec: border only, no shadow) ----- */
+  .card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 18px;
+  }
+
+  /* ----- iPhone frame ----- */
+  .iphone {
+    position: relative;
+    width: 290px;
+    aspect-ratio: 290 / 600;
+    border-radius: 46px;
+    padding: 11px;
+    background: linear-gradient(160deg, #3a3a3c, #1c1c1e 60%, #000);
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .iphone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(232,85,59,0.16), transparent 50%),
+      linear-gradient(160deg, #230D1A 0%, #331224 55%, #1A0D1A 100%);
+  }
+  .island {
+    position: absolute;
+    top: 12px; left: 50%; transform: translateX(-50%);
+    width: 78px; height: 22px;
+    background: #000; border-radius: 999px; z-index: 10;
+  }
+
+  /* ----- Reveal on scroll ----- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* gradient text for Pro */
+  .pro-text {
+    background: linear-gradient(90deg, var(--purple), var(--blue) 55%, var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  .symptom-tile { transition: transform .25s ease, background .25s ease; }
+  .symptom-tile:hover { transform: translateY(-4px); background: rgba(255,255,255,0.11); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity:1; transform:none; transition:none; }
+    .glow { animation: none; }
   }
 </style>
 </head>
-<body class="font-rounded">
 
-<header class="max-w-3xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-  <a href="./index.html" class="flex items-center gap-2.5">
-    <img src="./KAZE.png" alt="かぜ日記アイコン" class="w-9 h-9 rounded-[10px]" />
-    <span class="font-bold text-[17px]">かぜ日記</span>
-  </a>
-  <a href="./LP.html" class="text-sm text-white/60 hover:text-white transition">← トップへ</a>
+<body class="bg-wine font-rounded relative">
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<!-- ============ NAV ============ -->
+<header class="relative z-20">
+  <nav class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2.5">
+      <img src="./KAZE.png" alt="かぜ日記アイコン" class="w-9 h-9 rounded-[10px]" />
+      <span class="font-bold text-[17px] tracking-tight">かぜ日記</span>
+    </a>
+    <a href="https://apps.apple.com/jp/app/%E3%81%8B%E3%81%9C%E6%97%A5%E8%A8%98-%E4%BD%93%E6%B8%A9-%E7%97%87%E7%8A%B6-%E6%9C%8D%E8%96%AC%E8%A8%98%E9%8C%B2/id6748596034"
+       class="hidden sm:inline-flex items-center gap-2 bg-white text-darkbg font-bold text-sm px-4 py-2 rounded-full hover:bg-white/90 transition">
+      App Storeで入手
+    </a>
+  </nav>
 </header>
 
-<main class="max-w-3xl mx-auto px-5 sm:px-8 py-12">
-  <h1 class="font-extrabold text-3xl sm:text-4xl mb-2">プライバシーポリシー</h1>
-  <p class="text-xs text-white/45 mb-10">最終更新日：2026年6月8日</p>
+<!-- ============ HERO ============ -->
+<section id="top" class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-8 pb-20 lg:pt-16 lg:pb-28">
+  <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+    <!-- copy -->
+    <div class="reveal text-center lg:text-left">
+      <div class="inline-flex items-center gap-2 text-xs font-semibold text-white/70 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-coral"></span>
+        ヘルスケア & フィットネス・iOS
+      </div>
+      <h1 class="font-extrabold leading-[1.18] text-[34px] sm:text-[44px] lg:text-[52px] tracking-tight">
+        家族みんなの、<br class="hidden sm:block" />風邪を<span class="text-coral">記録</span>する。
+      </h1>
+      <p class="mt-5 text-white/70 text-[15px] sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+        体温・症状・服薬をまとめて管理。家族それぞれのデータを1台のiPhoneで。受診時に役立つPDFレポートも自動生成します。
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+        <a href="https://apps.apple.com/jp/app/%E3%81%8B%E3%81%9C%E6%97%A5%E8%A8%98-%E4%BD%93%E6%B8%A9-%E7%97%87%E7%8A%B6-%E6%9C%8D%E8%96%AC%E8%A8%98%E9%8C%B2/id6748596034"
+           class="group inline-flex items-center justify-center gap-3 bg-black border border-white/15 rounded-2xl px-6 py-3.5 hover:bg-black/80 transition">
+          <svg viewBox="0 0 24 24" class="w-7 h-7 fill-white" aria-hidden="true"><path d="M16.36 1.43c.06 1.06-.33 2.1-1.02 2.86-.7.78-1.84 1.38-2.94 1.29-.1-1.04.4-2.11 1.05-2.79.72-.78 1.96-1.34 2.91-1.36zM20.5 17.2c-.55 1.27-.81 1.84-1.52 2.96-.99 1.57-2.38 3.52-4.1 3.53-1.53.02-1.92-.99-4-.98-2.08.01-2.51 1-4.04.98-1.72-.02-3.04-1.78-4.03-3.34C-.07 16.0-.36 11.0 1.41 8.35c1.0-1.5 2.6-2.39 4.1-2.39 1.53 0 2.49 1.0 3.76 1.0 1.23 0 1.98-1.0 3.75-1.0 1.34 0 2.76.73 3.77 1.99-3.31 1.81-2.77 6.54.71 7.25z"/></svg>
+          <span class="text-left leading-tight">
+            <span class="block text-[10px] text-white/60">Download on the</span>
+            <span class="block text-lg font-bold -mt-0.5">App Store</span>
+          </span>
+        </a>
+      </div>
+      <p class="mt-4 text-xs text-white/45">無料でダウンロード ＋ Pro買い切り（App Storeで確認）</p>
+    </div>
+
+    <!-- iPhone mockup: record screen -->
+    <div class="reveal flex justify-center lg:justify-end">
+      <div class="iphone">
+        <div class="iphone-screen">
+          <div class="island"></div>
+          <!-- status bar -->
+          <div class="pt-3.5 px-5 flex justify-between text-[11px] font-semibold text-white/80">
+            <span>9:41</span>
+            <span class="flex items-center gap-1">●●● <span class="opacity-60">5G</span> ▮</span>
+          </div>
+
+          <div class="px-4 pt-5">
+            <p class="text-[11px] text-white/45 font-semibold">本日の記録</p>
+            <h2 class="text-lg font-extrabold mt-0.5">かぜ日記</h2>
+
+            <!-- member capsules -->
+            <div class="flex gap-1.5 mt-3 overflow-hidden">
+              <span class="text-[10.5px] font-bold px-3 py-1.5 rounded-full" style="background:rgba(232,85,59,.95);color:#fff">本人</span>
+              <span class="text-[10.5px] font-bold px-3 py-1.5 rounded-full" style="background:rgba(31,95,219,.25);color:#9dc0ff;border:1px solid rgba(31,95,219,.5)">むすめ</span>
+              <span class="text-[10.5px] font-bold px-3 py-1.5 rounded-full" style="background:rgba(255,255,255,.07);color:#fff8;border:1px solid rgba(255,255,255,.12)">＋</span>
+            </div>
+
+            <!-- temperature card -->
+            <div class="card mt-3 p-4 text-center">
+              <p class="text-[10px] text-white/45 font-semibold mb-1">体温</p>
+              <div class="flex items-baseline justify-center gap-1">
+                <span id="heroTemp" class="text-[46px] font-extrabold leading-none tracking-tight">36.0</span>
+                <span class="text-lg font-bold text-white/70">℃</span>
+              </div>
+              <span id="heroBadge" class="inline-block mt-2 text-[11px] font-bold px-3 py-1 rounded-full" style="background:rgba(51,199,142,.18);color:#33C78E">平熱</span>
+            </div>
+
+            <!-- symptom mini grid -->
+            <p class="text-[10px] text-white/45 font-semibold mt-3 mb-1.5">症状</p>
+            <div class="grid grid-cols-4 gap-1.5">
+              <div class="rounded-xl py-2 flex flex-col items-center gap-1" style="background:rgba(232,85,59,.18);border:1px solid rgba(232,85,59,.5)">
+                <span class="w-5 h-5 rounded-md flex items-center justify-center" style="background:#F5A623"><svg viewBox="0 0 24 24" class="w-3 h-3 fill-white"><path d="M5 10c0-2 1-4 3-4 1 0 1 1 1 2v4H7c-1 0-2-1-2-2zm14 0c0 1-1 2-2 2h-2V8c0-1 0-2 1-2 2 0 3 2 3 4zM11 4h2v8h-2z"/></svg></span>
+                <span class="text-[8px] font-semibold text-white/80">咳</span>
+              </div>
+              <div class="rounded-xl py-2 flex flex-col items-center gap-1" style="background:rgba(255,255,255,.06)">
+                <span class="w-5 h-5 rounded-md flex items-center justify-center" style="background:#3B82F6"><svg viewBox="0 0 24 24" class="w-3 h-3 fill-white"><path d="M12 3c2 4 5 6 5 10a5 5 0 0 1-10 0c0-4 3-6 5-10z"/></svg></span>
+                <span class="text-[8px] font-semibold text-white/55">鼻水</span>
+              </div>
+              <div class="rounded-xl py-2 flex flex-col items-center gap-1" style="background:rgba(232,85,59,.18);border:1px solid rgba(232,85,59,.5)">
+                <span class="w-5 h-5 rounded-md flex items-center justify-center" style="background:#E84B4B"><svg viewBox="0 0 24 24" class="w-3 h-3 fill-white"><circle cx="12" cy="12" r="6"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                <span class="text-[8px] font-semibold text-white/80">頭痛</span>
+              </div>
+              <div class="rounded-xl py-2 flex flex-col items-center gap-1" style="background:rgba(255,255,255,.06)">
+                <span class="w-5 h-5 rounded-md flex items-center justify-center" style="background:#F5C518"><svg viewBox="0 0 24 24" class="w-3 h-3 fill-white"><path d="M19 13a7 7 0 0 1-9-9 7 7 0 1 0 9 9z"/></svg></span>
+                <span class="text-[8px] font-semibold text-white/55">倦怠感</span>
+              </div>
+            </div>
+
+            <!-- record button -->
+            <button class="w-full mt-4 py-2.5 rounded-2xl font-bold text-sm text-white" style="background:#E8553B">記録する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES (3-col) ============ -->
+<section class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16">
+  <div class="grid md:grid-cols-3 gap-4">
+    <!-- 1 -->
+    <div class="reveal card p-6">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(232,85,59,.2)">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#E8553B" stroke-width="2" stroke-linecap="round"><path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0z"/></svg>
+      </div>
+      <h3 class="font-bold text-lg">体温を色で即判定</h3>
+      <p class="mt-2 text-sm text-white/65 leading-relaxed">数字をタップするだけ。発熱・微熱・平熱を色でひと目で判断できます。</p>
+    </div>
+    <!-- 2 -->
+    <div class="reveal card p-6">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(59,130,246,.2)">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3 class="font-bold text-lg">家族それぞれに記録</h3>
+      <p class="mt-2 text-sm text-white/65 leading-relaxed">家族それぞれのデータを1台のiPhoneで管理。メンバー切替は上部のボタンひとつ。</p>
+    </div>
+    <!-- 3 -->
+    <div class="reveal card p-6">
+      <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style="background:rgba(107,70,193,.22)">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+      </div>
+      <h3 class="font-bold text-lg">受診時に使えるPDF</h3>
+      <p class="mt-2 text-sm text-white/65 leading-relaxed">体温グラフ付きA4レポートを自動生成。受診時に医師へ見せるだけ。<span class="text-pblue font-semibold">（Pro）</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAMILY ============ -->
+<section class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16">
+  <div class="reveal card p-7 sm:p-10">
+    <div class="grid lg:grid-cols-2 gap-8 items-center">
+      <div>
+        <p class="text-coral font-bold text-sm mb-2">FAMILY</p>
+        <h2 class="font-extrabold text-2xl sm:text-3xl leading-snug">1台のiPhoneで、<br>家族みんなを記録。</h2>
+        <p class="mt-4 text-white/65 text-sm sm:text-base leading-relaxed">
+          メンバーごとに固有のカラーを割り当て。子どもの発熱経過から、同居家族・介護まで、一人ひとりの体調をまとめて管理できます。
+        </p>
+        <p class="mt-4 text-sm font-semibold text-white/80 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 inline-block">
+          無料で最大2名まで・Proで無制限
+        </p>
+      </div>
+      <!-- member capsules showcase -->
+      <div class="flex flex-wrap gap-2.5 justify-center lg:justify-end">
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(232,85,59);color:#fff">本人</span>
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(31,95,219);color:#fff">むすめ</span>
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(214,26,110);color:#fff">むすこ</span>
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(245,184,23);color:#3a2a00">母</span>
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(77,171,89);color:#fff">父</span>
+        <span class="font-bold text-sm px-4 py-2.5 rounded-full" style="background:rgb(13,163,122);color:#fff">祖母</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SYMPTOMS ============ -->
+<section class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16">
+  <div class="reveal text-center mb-10">
+    <h2 class="font-extrabold text-2xl sm:text-3xl">8種類の症状をタップ選択</h2>
+    <p class="mt-3 text-white/65 text-sm sm:text-base">咳・鼻水・頭痛…つらいときも手早く記録。</p>
+  </div>
+  <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+    <!-- 咳 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#F5A623"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M5 10c0-2 1-4 3-4 1 0 1 1 1 2v4H7c-1 0-2-1-2-2zm14 0c0 1-1 2-2 2h-2V8c0-1 0-2 1-2 2 0 3 2 3 4zM11 4h2v9h-2z"/></svg></span>
+      <span class="text-sm font-bold">咳</span>
+    </div>
+    <!-- 喀痰 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#33C78E"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8h11M4 13h14M4 18h9"/></svg></span>
+      <span class="text-sm font-bold">喀痰</span>
+    </div>
+    <!-- 鼻水 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#3B82F6"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M12 3c2.5 4.5 5 7 5 11a5 5 0 0 1-10 0c0-4 2.5-6.5 5-11z"/></svg></span>
+      <span class="text-sm font-bold">鼻水</span>
+    </div>
+    <!-- のどの痛み -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#8B5CF6"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#fff" stroke-width="2"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" stroke-linecap="round"/><path d="M16 4l4 4" stroke-linecap="round"/></svg></span>
+      <span class="text-sm font-bold">のどの痛み</span>
+    </div>
+    <!-- 頭痛 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#E84B4B"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="5"/><path d="M12 3v2M5 6l1.5 1.5M19 6l-1.5 1.5"/></svg></span>
+      <span class="text-sm font-bold">頭痛</span>
+    </div>
+    <!-- 倦怠感 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#F5C518"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M20 13a8 8 0 0 1-10-10 8 8 0 1 0 10 10z"/></svg></span>
+      <span class="text-sm font-bold">倦怠感</span>
+    </div>
+    <!-- 嘔吐 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#EC4899"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9c2 2 4 2 4 0s2-2 4 0 4 2 4 0 2-2 4 0"/><path d="M4 14h16"/></svg></span>
+      <span class="text-sm font-bold">嘔吐</span>
+    </div>
+    <!-- 下痢 -->
+    <div class="symptom-tile card p-5 flex flex-col items-center gap-3">
+      <span class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background:#0DA37A"><svg viewBox="0 0 24 24" class="w-6 h-6 fill-white"><path d="M12 3c2.5 4.5 5 7 5 11a5 5 0 0 1-10 0c0-4 2.5-6.5 5-11z"/></svg></span>
+      <span class="text-sm font-bold">下痢</span>
+    </div>
+  </div>
+  <p class="reveal text-center mt-6 text-sm text-white/55">服薬も記録できます。カスタム薬剤の登録も可能です。</p>
+</section>
+
+<!-- ============ CHARTS ============ -->
+<section class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16">
+  <div class="grid lg:grid-cols-2 gap-12 items-center">
+    <div class="reveal order-2 lg:order-1">
+      <p class="text-coral font-bold text-sm mb-2">CHART</p>
+      <h2 class="font-extrabold text-2xl sm:text-3xl leading-snug">経過が、一目でわかる。</h2>
+      <p class="mt-4 text-white/65 text-sm sm:text-base leading-relaxed">
+        体温の推移を折れ線グラフで可視化。37.5℃の発熱ラインを基準に、回復の流れがすぐにつかめます。期間は7日・30日・全期間で切り替え可能です。
+      </p>
+    </div>
+    <!-- chart mockup -->
+    <div class="reveal order-1 lg:order-2 flex justify-center">
+      <div class="iphone">
+        <div class="iphone-screen">
+          <div class="island"></div>
+          <div class="pt-3.5 px-5 flex justify-between text-[11px] font-semibold text-white/80">
+            <span>9:41</span><span>▮</span>
+          </div>
+          <div class="px-4 pt-5">
+            <h2 class="text-lg font-extrabold">体温グラフ</h2>
+            <div class="flex gap-1.5 mt-3">
+              <span class="text-[10px] font-bold px-3 py-1.5 rounded-full" style="background:#E8553B;color:#fff">7日</span>
+              <span class="text-[10px] font-bold px-3 py-1.5 rounded-full" style="background:rgba(255,255,255,.07);color:#fff8">30日</span>
+              <span class="text-[10px] font-bold px-3 py-1.5 rounded-full" style="background:rgba(255,255,255,.07);color:#fff8">全期間</span>
+            </div>
+            <div class="card mt-3 p-3">
+              <svg viewBox="0 0 250 200" class="w-full">
+                <!-- gridlines -->
+                <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+                  <line x1="30" y1="20" x2="240" y2="20"/>
+                  <line x1="30" y1="70" x2="240" y2="70"/>
+                  <line x1="30" y1="120" x2="240" y2="120"/>
+                  <line x1="30" y1="170" x2="240" y2="170"/>
+                </g>
+                <!-- y labels -->
+                <g fill="rgba(255,255,255,0.4)" font-size="9" font-family="inherit">
+                  <text x="2" y="24">39</text><text x="2" y="74">38</text>
+                  <text x="2" y="124">37</text><text x="2" y="174">36</text>
+                </g>
+                <!-- 37.5 fever rule line (RuleMark) -->
+                <line x1="30" y1="95" x2="240" y2="95" stroke="#E8553B" stroke-width="1.4" stroke-dasharray="4 4"/>
+                <text x="200" y="91" fill="#E8553B" font-size="8.5" font-weight="700">37.5℃</text>
+                <!-- area + line -->
+                <polyline fill="none" stroke="#E8553B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+                  points="40,150 75,60 110,40 145,75 180,110 215,140"/>
+                <g fill="#E8553B">
+                  <circle cx="40" cy="150" r="3.2"/><circle cx="75" cy="60" r="3.2"/>
+                  <circle cx="110" cy="40" r="3.2"/><circle cx="145" cy="75" r="3.2"/>
+                  <circle cx="180" cy="110" r="3.2"/><circle cx="215" cy="140" r="3.2"/>
+                </g>
+                <!-- x labels -->
+                <g fill="rgba(255,255,255,0.4)" font-size="8" font-family="inherit" text-anchor="middle">
+                  <text x="40" y="192">月</text><text x="75" y="192">火</text><text x="110" y="192">水</text>
+                  <text x="145" y="192">木</text><text x="180" y="192">金</text><text x="215" y="192">土</text>
+                </g>
+              </svg>
+            </div>
+            <p class="text-[10px] text-white/45 mt-2 text-center">37.5℃の発熱ラインで経過を把握</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRO ============ -->
+<section class="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 py-16">
+  <div class="reveal text-center mb-8">
+    <p class="pro-text font-extrabold text-sm mb-2">PRO PLAN</p>
+    <h2 class="font-extrabold text-2xl sm:text-3xl">買い切りで、ずっと使える。</h2>
+    <p class="mt-3 text-white/65 text-sm sm:text-base">一度購入すれば永続利用。価格はApp Storeでご確認ください。</p>
+  </div>
+
+  <div class="reveal card overflow-hidden">
+    <div class="grid grid-cols-3 text-center text-sm">
+      <!-- header row -->
+      <div class="p-4 text-left font-bold text-white/55 text-xs">機能</div>
+      <div class="p-4 font-bold text-white/70">無料</div>
+      <div class="p-4 font-bold pro-text">Pro</div>
+    </div>
+    <div class="divide-y divide-white/8 text-sm">
+      <!-- rows -->
+      <div class="grid grid-cols-3 items-center">
+        <div class="p-4 text-left text-white/80">体温・症状・服薬の記録</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+      </div>
+      <div class="grid grid-cols-3 items-center bg-white/[0.02]">
+        <div class="p-4 text-left text-white/80">グラフ・データ閲覧</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+      </div>
+      <div class="grid grid-cols-3 items-center">
+        <div class="p-4 text-left text-white/80">テキストエクスポート</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+      </div>
+      <div class="grid grid-cols-3 items-center bg-white/[0.02]">
+        <div class="p-4 text-left text-white/80">家族メンバー</div>
+        <div class="p-4 text-white/60 font-semibold text-xs">2人まで</div>
+        <div class="p-4 text-pblue font-bold text-xs">無制限</div>
+      </div>
+      <div class="grid grid-cols-3 items-center">
+        <div class="p-4 text-left text-white/80">PDFレポート生成</div>
+        <div class="p-4 text-white/25 font-bold">—</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+      </div>
+      <div class="grid grid-cols-3 items-center bg-white/[0.02]">
+        <div class="p-4 text-left text-white/80">AI要約（Apple Intelligence）</div>
+        <div class="p-4 text-white/25 font-bold">—</div>
+        <div class="p-4 text-pgreen font-bold">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal text-center mt-8">
+    <a href="https://apps.apple.com/jp/app/%E3%81%8B%E3%81%9C%E6%97%A5%E8%A8%98-%E4%BD%93%E6%B8%A9-%E7%97%87%E7%8A%B6-%E6%9C%8D%E8%96%AC%E8%A8%98%E9%8C%B2/id6748596034"
+       class="inline-flex items-center justify-center gap-3 bg-black border border-white/15 rounded-2xl px-7 py-3.5 hover:bg-black/80 transition">
+      <svg viewBox="0 0 24 24" class="w-7 h-7 fill-white" aria-hidden="true"><path d="M16.36 1.43c.06 1.06-.33 2.1-1.02 2.86-.7.78-1.84 1.38-2.94 1.29-.1-1.04.4-2.11 1.05-2.79.72-.78 1.96-1.34 2.91-1.36zM20.5 17.2c-.55 1.27-.81 1.84-1.52 2.96-.99 1.57-2.38 3.52-4.1 3.53-1.53.02-1.92-.99-4-.98-2.08.01-2.51 1-4.04.98-1.72-.02-3.04-1.78-4.03-3.34C-.07 16.0-.36 11.0 1.41 8.35c1.0-1.5 2.6-2.39 4.1-2.39 1.53 0 2.49 1.0 3.76 1.0 1.23 0 1.98-1.0 3.75-1.0 1.34 0 2.76.73 3.77 1.99-3.31 1.81-2.77 6.54.71 7.25z"/></svg>
+      <span class="text-left leading-tight">
+        <span class="block text-[10px] text-white/60">Download on the</span>
+        <span class="block text-lg font-bold -mt-0.5">App Store</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ AI SUMMARY ============ -->
+<section class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 py-16">
+  <div class="reveal card p-7 sm:p-12 relative overflow-hidden">
+    <div class="absolute -top-20 -right-20 w-72 h-72 rounded-full" style="background:radial-gradient(circle,rgba(107,70,193,.45),transparent 70%)"></div>
+    <div class="relative">
+      <div class="inline-flex items-center gap-2 text-xs font-bold mb-4 px-3 py-1.5 rounded-full" style="background:rgba(107,70,193,.2);color:#c4b5fd">
+        ✨ Apple Intelligence・iOS 26+
+      </div>
+      <h2 class="font-extrabold text-2xl sm:text-3xl leading-snug max-w-2xl">
+        オンデバイスAIが、<br class="sm:hidden">記録をやさしく要約。
+      </h2>
+      <p class="mt-4 text-white/65 text-sm sm:text-base leading-relaxed max-w-2xl">
+        Apple FoundationModels（オンデバイス）が、選択中メンバーの記録を日次で自動要約。<span class="font-bold text-white/90">データは端末の外に出ません。</span>すべて端末内で完結する、完全プライベートな処理です。
+      </p>
+      <p class="mt-5 text-xs text-white/45 max-w-2xl leading-relaxed">
+        ※ AI要約はProプラン・iOS 26以降・Apple Intelligence対応のiPhoneでのみご利用いただけます。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 py-16 text-center">
+  <div class="reveal">
+    <img src="./KAZE.png" alt="かぜ日記" class="w-20 h-20 rounded-[22px] mx-auto mb-6" />
+    <h2 class="font-extrabold text-2xl sm:text-3xl">家族みんなの、風邪を記録する。</h2>
+    <p class="mt-3 text-white/65 text-sm sm:text-base">今日から、かぜ日記を。</p>
+    <div class="mt-7 flex justify-center">
+      <a href="https://apps.apple.com/jp/app/%E3%81%8B%E3%81%9C%E6%97%A5%E8%A8%98-%E4%BD%93%E6%B8%A9-%E7%97%87%E7%8A%B6-%E6%9C%8D%E8%96%AC%E8%A8%98%E9%8C%B2/id6748596034"
+         class="inline-flex items-center justify-center gap-3 bg-black border border-white/15 rounded-2xl px-7 py-3.5 hover:bg-black/80 transition">
+        <svg viewBox="0 0 24 24" class="w-7 h-7 fill-white" aria-hidden="true"><path d="M16.36 1.43c.06 1.06-.33 2.1-1.02 2.86-.7.78-1.84 1.38-2.94 1.29-.1-1.04.4-2.11 1.05-2.79.72-.78 1.96-1.34 2.91-1.36zM20.5 17.2c-.55 1.27-.81 1.84-1.52 2.96-.99 1.57-2.38 3.52-4.1 3.53-1.53.02-1.92-.99-4-.98-2.08.01-2.51 1-4.04.98-1.72-.02-3.04-1.78-4.03-3.34C-.07 16.0-.36 11.0 1.41 8.35c1.0-1.5 2.6-2.39 4.1-2.39 1.53 0 2.49 1.0 3.76 1.0 1.23 0 1.98-1.0 3.75-1.0 1.34 0 2.76.73 3.77 1.99-3.31 1.81-2.77 6.54.71 7.25z"/></svg>
+        <span class="text-left leading-tight">
+          <span class="block text-[10px] text-white/60">Download on the</span>
+          <span class="block text-lg font-bold -mt-0.5">App Store</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIVACY POLICY ============ -->
+<section id="privacy" class="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 py-16 border-t border-white/8">
+  <h2 class="font-extrabold text-2xl sm:text-3xl mb-2">プライバシーポリシー</h2>
+  <p class="text-xs text-white/45 mb-8">最終更新日：2025年6月</p>
 
   <div class="space-y-7 text-sm text-white/70 leading-relaxed">
     <p>Great Wave Labs（以下「当方」）は、iOS向けアプリ「かぜ日記」（以下「本アプリ」）におけるユーザーのプライバシーを尊重し、個人情報および利用データの保護に努めます。本ポリシーは、本アプリにおける情報の取り扱いについて定めるものです。</p>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">1. 取得・保存する情報</h2>
+      <h3 class="font-bold text-white text-base mb-2">1. 取得・保存する情報</h3>
       <p>本アプリでは、ユーザーが入力した体温・症状・服薬・家族メンバー等の健康記録を取り扱います。これらのデータは、ユーザーのiPhone／iPadの端末内、およびユーザーが設定している場合はApple社が提供するiCloud内にのみ保存されます。当方がこれらの健康記録を取得・収集することはありません。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">2. 第三者への提供・送信</h2>
+      <h3 class="font-bold text-white text-base mb-2">2. 第三者への提供・送信</h3>
       <p>本アプリは、ユーザーの健康記録を当方のサーバーや第三者へ送信・提供することはありません。記録の共有（テキスト共有・PDFレポートの送信／印刷等）は、すべてユーザーご自身の操作（iOSの共有シート）によってのみ行われます。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">3. AI要約機能について</h2>
+      <h3 class="font-bold text-white text-base mb-2">3. AI要約機能について</h3>
       <p>ProプランのAI要約機能（iOS 26以降・Apple Intelligence対応端末）は、Apple社のオンデバイス基盤モデル（Apple FoundationModels）を使用します。要約処理はすべて端末内で完結し、記録データが端末の外部に送信されることはありません。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">4. 解析・広告について</h2>
+      <h3 class="font-bold text-white text-base mb-2">4. 解析・広告について</h3>
       <p>本アプリは、行動追跡を目的とした第三者の解析ツールや広告SDKを使用していません。ユーザーを個人として識別する目的での情報収集は行いません。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">5. App内課金</h2>
+      <h3 class="font-bold text-white text-base mb-2">5. App内課金</h3>
       <p>Proプランの購入はApple社のApp Storeを通じて処理されます。課金・決済に関する情報はApple社により管理され、当方がクレジットカード番号等の決済情報を取得することはありません。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">6. データの削除</h2>
+      <h3 class="font-bold text-white text-base mb-2">6. データの削除</h3>
       <p>ユーザーは本アプリ内でいつでも記録を削除できます。本アプリをアンインストールすることで、端末内に保存されたデータは削除されます（iCloud上のデータについてはAppleの設定に従います）。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">7. 医療に関する免責</h2>
+      <h3 class="font-bold text-white text-base mb-2">7. 医療に関する免責</h3>
       <p>本アプリは健康記録の補助を目的としたものであり、医療機器ではありません。診断・治療・予防を目的とするものではなく、医師等による専門的な判断に代わるものではありません。健康上の懸念がある場合は、必ず医療機関にご相談ください。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">8. 本ポリシーの変更</h2>
+      <h3 class="font-bold text-white text-base mb-2">8. 本ポリシーの変更</h3>
       <p>本ポリシーは、必要に応じて改定されることがあります。重要な変更がある場合は、本ページまたはアプリ内にてお知らせします。</p>
     </div>
 
     <div>
-      <h2 class="font-bold text-white text-base mb-2">9. お問い合わせ</h2>
+      <h3 class="font-bold text-white text-base mb-2">9. お問い合わせ</h3>
       <p>本アプリおよび本ポリシーに関するお問い合わせは、以下までご連絡ください。</p>
       <p class="mt-2">開発：Great Wave Labs<br>
         メール：<a href="mailto:keisuke9n@gmail.com" class="text-coral font-semibold underline decoration-coral/40 hover:decoration-coral">keisuke9n@gmail.com</a></p>
     </div>
   </div>
+</section>
 
-  <div class="mt-12 pt-6 border-t border-white/10 text-xs text-white/40">
-    © 2025 Great Wave Labs. All rights reserved.
+<!-- ============ FOOTER ============ -->
+<footer class="relative z-10 border-t border-white/8">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div class="flex items-center gap-2.5">
+        <img src="./KAZE.png" alt="かぜ日記" class="w-8 h-8 rounded-[9px]" />
+        <span class="font-bold">かぜ日記</span>
+      </div>
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/60">
+        <a href="#privacy" class="hover:text-white transition">プライバシーポリシー</a>
+        <a href="mailto:keisuke9n@gmail.com" class="hover:text-white transition">お問い合わせ</a>
+        <a href="https://apps.apple.com/jp/app/%E3%81%8B%E3%81%9C%E6%97%A5%E8%A8%98-%E4%BD%93%E6%B8%A9-%E7%97%87%E7%8A%B6-%E6%9C%8D%E8%96%AC%E8%A8%98%E9%8C%B2/id6748596034" class="hover:text-white transition">App Store</a>
+      </nav>
+    </div>
+    <div class="mt-8 pt-6 border-t border-white/8 text-xs text-white/40 leading-relaxed">
+      <p>本アプリは医療機器ではなく、診断・治療を目的としたものではありません。健康上の判断は医療機関にご相談ください。</p>
+      <p class="mt-3">© 2025 Great Wave Labs. All rights reserved.</p>
+    </div>
   </div>
-</main>
+</footer>
 
+<script>
+  /* ---- Reveal on scroll ---- */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  /* ---- Hero temperature count-up: 36.0 -> 38.4 ---- */
+  function classify(t) {
+    if (t >= 38.0) return { label: '発熱', bg: 'rgba(232,85,59,.2)', fg: '#E8553B', num: '#E8553B' };
+    if (t >= 37.5) return { label: '微熱', bg: 'rgba(245,166,35,.2)', fg: '#F5A623', num: '#F5A623' };
+    if (t >= 37.0) return { label: 'やや高め', bg: 'rgba(245,197,24,.2)', fg: '#F5C518', num: '#F5C518' };
+    return { label: '平熱', bg: 'rgba(51,199,142,.18)', fg: '#33C78E', num: '#F5EEF2' };
+  }
+  function animateTemp() {
+    const numEl = document.getElementById('heroTemp');
+    const badge = document.getElementById('heroBadge');
+    if (!numEl) return;
+    const start = 36.0, end = 38.4, dur = 1600;
+    let t0 = null;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      const p = Math.min((ts - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = (start + (end - start) * eased);
+      numEl.textContent = val.toFixed(1);
+      const c = classify(val);
+      numEl.style.color = c.num;
+      badge.textContent = c.label;
+      badge.style.background = c.bg;
+      badge.style.color = c.fg;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { animateTemp(); heroObserver.disconnect(); } });
+  }, { threshold: 0.5 });
+  const heroTarget = document.getElementById('heroTemp');
+  if (heroTarget) heroObserver.observe(heroTarget);
+</script>
 </body>
 </html>
